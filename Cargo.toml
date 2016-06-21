@@ -1,0 +1,15 @@
+[package]
+name = "sprite_component"
+version = "0.1.0"
+authors = ["nathanfaucett <nathanfaucett@gmail.com>"]
+
+keywords = ["sprite_component"]
+description = "sprite component and manager for the scene_graph lib"
+license = "MIT"
+readme = "README.md"
+repository = "https://github.com/nathanfaucett/rs-sprite_component.git"
+homepage = "https://github.com/nathanfaucett/rs-sprite_component"
+
+
+[dependencies.scene_graph]
+git = "https://github.com/nathanfaucett/rs-scene_graph.git"
