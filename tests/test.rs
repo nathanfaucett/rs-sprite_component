@@ -14,11 +14,14 @@ fn test_scene() {
     let entity = Entity::new();
     let sprite = Sprite::new();
 
-    entity.add_component(sprite);
+    entity.add_component(sprite.clone());
     scene.add_entity(entity.clone());
 
     let entity_sprite = entity.get_component::<Sprite>().unwrap();
 
     assert!(entity_sprite.layer() == 0);
     assert!(entity_sprite.z() == 0);
+
+    entity_sprite.set_layer(5);
+    entity_sprite.set_z(-5);
 }

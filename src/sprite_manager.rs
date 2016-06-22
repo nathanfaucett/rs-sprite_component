@@ -3,12 +3,13 @@ use collections::boxed::Box;
 use alloc::arc::Arc;
 use core::cell::RefCell;
 
-use scene_graph::{Component, ComponentManager, Id};
+use scene_graph::{Scene, Component, ComponentManager, Id};
 use sprite::Sprite;
 
 
 struct SpriteManagerData {
-    components: Vec<Sprite>,
+    scene: Option<Scene>,
+    layers: Vec<Vec<Sprite>>,
 }
 
 
@@ -20,10 +21,29 @@ pub struct SpriteManager {
 impl SpriteManager {
 
     pub fn new() -> SpriteManager {
+        let mut layers = Vec::new();
+        layers.push(Vec::new());
+
         SpriteManager {
             data: Arc::new(RefCell::new(SpriteManagerData {
-                components: Vec::new(),
+                scene: None,
+                layers: layers,
             }))
+        }
+    }
+
+    pub fn sort_layer(&self, layer: usize) {
+        let ref mut layers = self.data.borrow_mut().layers;
+
+        if layer < layers.len() {
+            layers[layer].sort_by(|a, b| a.z().cmp(&b.z()));
+        }
+    }
+    pub fn sort_layers(&self) {
+        let ref mut layers = self.data.borrow_mut().layers;
+
+        for layer in layers.iter_mut() {
+            layer.sort_by(|a, b| a.z().cmp(&b.z()));
         }
     }
 }
@@ -32,9 +52,24 @@ impl ComponentManager for SpriteManager {
 
     fn id(&self) -> Id { Id::of::<SpriteManager>() }
 
+    fn scene(&self) -> Option<Scene> {
+        match self.data.borrow().scene {
+            Some(ref scene) => Some(scene.clone()),
+            None => None,
+        }
+    }
+    fn set_scene(&self, scene: Option<Scene>) {
+        self.data.borrow_mut().scene = scene;
+    }
+
     fn order(&self) -> usize { 0 }
     fn is_empty(&self) -> bool {
-        self.data.borrow().components.len() == 0
+        for layer in self.data.borrow().layers.iter() {
+            if layer.is_empty() {
+                return true;
+            }
+        }
+        false
     }
 
     fn destroy(&self) {}
@@ -43,17 +78,33 @@ impl ComponentManager for SpriteManager {
 
     fn add_component(&self, component: &Box<Component>) {
         let component = component.downcast_ref::<Sprite>().unwrap();
+        let layer = component.layer();
+
         component.set_sprite_manager(Some(self.clone()));
-        self.data.borrow_mut().components.push(component.clone());
+
+        {
+            let ref mut layers = self.data.borrow_mut().layers;
+            let len = layers.len();
+
+            if layer > len {
+                for _ in len..(layer + 1) {
+                    layers.push(Vec::new());
+                }
+            }
+
+            layers[layer].push(component.clone());
+        }
+
+        self.sort_layers();
     }
     fn remove_component(&self, component: &Box<Component>) {
         let component = component.downcast_ref::<Sprite>().unwrap();
-        let ref mut components = self.data.borrow_mut().components;
+        let ref mut layer = self.data.borrow_mut().layers[component.layer()];
 
-        match components.iter().position(|c| *c == *component) {
+        match layer.iter().position(|c| *c == *component) {
             Some(i) => {
                 component.set_sprite_manager(None);
-                components.remove(i);
+                layer.remove(i);
             },
             None => (),
         }
