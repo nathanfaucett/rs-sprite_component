@@ -1,6 +1,6 @@
 use collections::vec::Vec;
 use collections::boxed::Box;
-use alloc::arc::Arc;
+use alloc::rc::Rc;
 use core::cell::RefCell;
 
 use scene_graph::{Scene, Component, ComponentManager, Id};
@@ -15,7 +15,7 @@ struct SpriteManagerData {
 
 #[derive(Clone)]
 pub struct SpriteManager {
-    data: Arc<RefCell<SpriteManagerData>>,
+    data: Rc<RefCell<SpriteManagerData>>,
 }
 
 impl SpriteManager {
@@ -25,7 +25,7 @@ impl SpriteManager {
         layers.push(Vec::new());
 
         SpriteManager {
-            data: Arc::new(RefCell::new(SpriteManagerData {
+            data: Rc::new(RefCell::new(SpriteManagerData {
                 scene: None,
                 layers: layers,
             }))

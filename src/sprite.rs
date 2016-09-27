@@ -1,5 +1,5 @@
 use collections::boxed::Box;
-use alloc::arc::Arc;
+use alloc::rc::Rc;
 use core::cell::RefCell;
 
 use scene_graph::{Entity, Component, ComponentManager, Id};
@@ -28,13 +28,13 @@ struct SpriteData {
 
 #[derive(Clone)]
 pub struct Sprite {
-    data: Arc<RefCell<SpriteData>>,
+    data: Rc<RefCell<SpriteData>>,
 }
 
 impl Sprite {
     pub fn new() -> Self {
         Sprite {
-            data: Arc::new(RefCell::new(SpriteData {
+            data: Rc::new(RefCell::new(SpriteData {
 
                 entity: None,
                 sprite_manager: None,
