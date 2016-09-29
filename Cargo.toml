@@ -13,3 +13,6 @@ homepage = "https://github.com/nathanfaucett/rs-sprite_component"
 
 [dependencies.scene_graph]
 git = "https://github.com/nathanfaucett/rs-scene_graph.git"
+
+[dependencies.shared]
+git = "https://github.com/nathanfaucett/rs-shared.git"

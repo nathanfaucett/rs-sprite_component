@@ -10,17 +10,17 @@ use scene_graph::{Scene, Entity};
 
 #[test]
 fn test_scene() {
-    let scene = Scene::new();
-    let entity = Entity::new();
+    let mut scene = Scene::new();
+    let mut entity = Entity::new();
     let sprite = Sprite::new();
 
-    entity.add_component(sprite.clone());
-    scene.add_entity(entity.clone());
+    entity.add_component(sprite);
+    scene.add_entity(&mut entity);
 
-    let entity_sprite = entity.get_component::<Sprite>().unwrap();
+    let mut entity_sprite = entity.get_component::<Sprite>().unwrap();
 
-    assert!(entity_sprite.layer() == 0);
-    assert!(entity_sprite.z() == 0);
+    assert!(entity_sprite.get_layer() == 0);
+    assert!(entity_sprite.get_z() == 0);
 
     entity_sprite.set_layer(5);
     entity_sprite.set_z(-5);

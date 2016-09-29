@@ -1,11 +1,11 @@
+#![feature(collections)]
 #![no_std]
-#![feature(collections, alloc)]
 
 
-extern crate alloc;
 extern crate collections;
 
 extern crate scene_graph;
+extern crate shared;
 
 
 mod sprite;

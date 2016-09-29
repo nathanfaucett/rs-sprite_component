@@ -1,8 +1,7 @@
 use collections::vec::Vec;
 use collections::boxed::Box;
-use alloc::rc::Rc;
-use core::cell::RefCell;
 
+use shared::Shared;
 use scene_graph::{Scene, Component, ComponentManager, Id};
 use sprite::Sprite;
 
@@ -15,7 +14,7 @@ struct SpriteManagerData {
 
 #[derive(Clone)]
 pub struct SpriteManager {
-    data: Rc<RefCell<SpriteManagerData>>,
+    data: Shared<SpriteManagerData>,
 }
 
 impl SpriteManager {
@@ -25,46 +24,46 @@ impl SpriteManager {
         layers.push(Vec::new());
 
         SpriteManager {
-            data: Rc::new(RefCell::new(SpriteManagerData {
+            data: Shared::new(SpriteManagerData {
                 scene: None,
                 layers: layers,
-            }))
+            })
         }
     }
 
-    pub fn sort_layer(&self, layer: usize) {
-        let ref mut layers = self.data.borrow_mut().layers;
+    pub fn sort_layer(&mut self, layer: usize) {
+        let ref mut layers = self.data.layers;
 
         if layer < layers.len() {
-            layers[layer].sort_by(|a, b| a.z().cmp(&b.z()));
+            layers[layer].sort_by(|a, b| a.get_z().cmp(&b.get_z()));
         }
     }
-    pub fn sort_layers(&self) {
-        let ref mut layers = self.data.borrow_mut().layers;
+    pub fn sort_layers(&mut self) {
+        let ref mut layers = self.data.layers;
 
         for layer in layers.iter_mut() {
-            layer.sort_by(|a, b| a.z().cmp(&b.z()));
+            layer.sort_by(|a, b| a.get_z().cmp(&b.get_z()));
         }
     }
 }
 
 impl ComponentManager for SpriteManager {
 
-    fn id(&self) -> Id { Id::of::<SpriteManager>() }
+    fn get_id(&self) -> Id { Id::of::<SpriteManager>() }
 
-    fn scene(&self) -> Option<Scene> {
-        match self.data.borrow().scene {
+    fn get_scene(&self) -> Option<Scene> {
+        match self.data.scene {
             Some(ref scene) => Some(scene.clone()),
             None => None,
         }
     }
-    fn set_scene(&self, scene: Option<Scene>) {
-        self.data.borrow_mut().scene = scene;
+    fn set_scene(&mut self, scene: Option<Scene>) {
+        self.data.scene = scene;
     }
 
-    fn order(&self) -> usize { 0 }
+    fn get_order(&self) -> usize { 0 }
     fn is_empty(&self) -> bool {
-        for layer in self.data.borrow().layers.iter() {
+        for layer in self.data.layers.iter() {
             if layer.is_empty() {
                 return true;
             }
@@ -72,18 +71,18 @@ impl ComponentManager for SpriteManager {
         false
     }
 
-    fn destroy(&self) {}
-    fn init(&self) {}
-    fn update(&self) {}
+    fn clear(&mut self) {}
+    fn init(&mut self) {}
+    fn update(&mut self) {}
 
-    fn add_component(&self, component: &Box<Component>) {
-        let component = component.downcast_ref::<Sprite>().unwrap();
-        let layer = component.layer();
+    fn add_component(&mut self, component: &mut Box<Component>) {
+        let component = component.downcast_mut::<Sprite>().unwrap();
+        let layer = component.get_layer();
 
         component.set_sprite_manager(Some(self.clone()));
 
         {
-            let ref mut layers = self.data.borrow_mut().layers;
+            let ref mut layers = self.data.layers;
             let len = layers.len();
 
             if layer > len {
@@ -97,9 +96,9 @@ impl ComponentManager for SpriteManager {
 
         self.sort_layers();
     }
-    fn remove_component(&self, component: &Box<Component>) {
-        let component = component.downcast_ref::<Sprite>().unwrap();
-        let ref mut layer = self.data.borrow_mut().layers[component.layer()];
+    fn remove_component(&mut self, component: &mut Box<Component>) {
+        let component = component.downcast_mut::<Sprite>().unwrap();
+        let ref mut layer = self.data.layers[component.get_layer()];
 
         match layer.iter().position(|c| *c == *component) {
             Some(i) => {
