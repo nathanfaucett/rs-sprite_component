@@ -4,6 +4,7 @@
 
 extern crate collections;
 
+extern crate material;
 extern crate scene_graph;
 extern crate shared;
 

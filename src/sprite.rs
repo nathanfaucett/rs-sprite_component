@@ -1,5 +1,6 @@
 use collections::boxed::Box;
 
+use material::Material;
 use shared::Shared;
 use scene_graph::{Entity, Component, ComponentManager, Id};
 use sprite_manager::SpriteManager;
@@ -13,7 +14,7 @@ struct SpriteData {
     layer: usize,
     z: isize,
 
-    material: Option<usize>,
+    material: Option<Material>,
 
     width: f32,
     height: f32,
