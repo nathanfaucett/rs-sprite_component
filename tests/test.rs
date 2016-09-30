@@ -1,11 +1,14 @@
 #![no_std]
 
-extern crate sprite_component;
+
 extern crate scene_graph;
 
+extern crate sprite_component;
+
+
+use scene_graph::{Scene, Entity};
 
 use sprite_component::Sprite;
-use scene_graph::{Scene, Entity};
 
 
 #[test]

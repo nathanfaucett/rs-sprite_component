@@ -1,8 +1,9 @@
+use alloc::boxed::Box;
 use collections::vec::Vec;
-use collections::boxed::Box;
 
 use shared::Shared;
 use scene_graph::{Scene, Component, ComponentManager, Id};
+
 use sprite::Sprite;
 
 
