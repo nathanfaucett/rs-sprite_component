@@ -1,11 +1,12 @@
 #![feature(alloc)]
-#![feature(collections)]
 #![no_std]
 
 
 extern crate alloc;
-extern crate collections;
 
+extern crate vector;
+extern crate stack;
+extern crate remove;
 extern crate material;
 extern crate scene_graph;
 extern crate shared;

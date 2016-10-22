@@ -1,6 +1,8 @@
 use alloc::boxed::Box;
-use collections::vec::Vec;
 
+use vector::Vector;
+use stack::Stack;
+use remove::Remove;
 use shared::Shared;
 use scene_graph::{Scene, Component, ComponentManager, Id};
 
@@ -9,7 +11,7 @@ use sprite::Sprite;
 
 struct SpriteManagerData {
     scene: Option<Scene>,
-    layers: Vec<Vec<Sprite>>,
+    layers: Vector<Vector<Sprite>>,
 }
 
 
@@ -21,8 +23,8 @@ pub struct SpriteManager {
 impl SpriteManager {
 
     pub fn new() -> SpriteManager {
-        let mut layers = Vec::new();
-        layers.push(Vec::new());
+        let mut layers = Vector::new();
+        layers.push(Vector::new());
 
         SpriteManager {
             data: Shared::new(SpriteManagerData {
@@ -88,7 +90,7 @@ impl ComponentManager for SpriteManager {
 
             if layer > len {
                 for _ in len..(layer + 1) {
-                    layers.push(Vec::new());
+                    layers.push(Vector::new());
                 }
             }
 
@@ -104,7 +106,7 @@ impl ComponentManager for SpriteManager {
         match layer.iter().position(|c| *c == *component) {
             Some(i) => {
                 component.set_sprite_manager(None);
-                layer.remove(i);
+                layer.remove(&i);
             },
             None => (),
         }
