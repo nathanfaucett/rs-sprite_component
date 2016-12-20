@@ -15,7 +15,7 @@ struct SpriteData {
     layer: usize,
     z: isize,
 
-    material: Option<Material>,
+    material: Material,
 
     width: f32,
     height: f32,
@@ -33,7 +33,7 @@ pub struct Sprite {
 }
 
 impl Sprite {
-    pub fn new() -> Self {
+    pub fn new(material: Material) -> Self {
         Sprite {
             data: Shared::new(SpriteData {
 
@@ -43,7 +43,7 @@ impl Sprite {
                 layer: 0usize,
                 z: 0isize,
 
-                material: None,
+                material: material,
 
                 width: 1f32,
                 height: 1f32,
@@ -63,8 +63,15 @@ impl Sprite {
         self.data.sprite_manager = sprite_manager;
     }
 
+    pub fn set_material(&mut self, material: Material) -> &mut Self {
+        self.data.material = material;
+        self
+    }
+    pub fn get_material(&self) -> &Material { &self.data.material }
+    pub fn get_material_mut(&mut self) -> &mut Material { &mut self.data.material }
+
     pub fn get_layer(&self) -> usize { self.data.layer }
-    pub fn set_layer(&mut self, layer: usize) -> &Self {
+    pub fn set_layer(&mut self, layer: usize) -> &mut Self {
         let old_layer = self.data.layer;
 
         if old_layer != layer {
@@ -86,7 +93,7 @@ impl Sprite {
     }
 
     pub fn get_z(&self) -> isize { self.data.z }
-    pub fn set_z(&mut self, z: isize) -> &Self {
+    pub fn set_z(&mut self, z: isize) -> &mut Self {
         let old_z = self.data.z;
 
         if old_z != z {
@@ -107,33 +114,33 @@ impl Sprite {
     }
 
     pub fn get_width(&self) -> f32 { self.data.width }
-    pub fn set_width(&mut self, width: f32) -> &Self {
+    pub fn set_width(&mut self, width: f32) -> &mut Self {
         self.data.width = width;
         self
     }
     pub fn get_height(&self) -> f32 { self.data.height }
-    pub fn set_height(&mut self, height: f32) -> &Self {
+    pub fn set_height(&mut self, height: f32) -> &mut Self {
         self.data.height = height;
         self
     }
 
     pub fn get_x(&self) -> f32 { self.data.x }
-    pub fn set_x(&mut self, x: f32) -> &Self {
+    pub fn set_x(&mut self, x: f32) -> &mut Self {
         self.data.x = x;
         self
     }
     pub fn get_y(&self) -> f32 { self.data.y }
-    pub fn set_y(&mut self, y: f32) -> &Self {
+    pub fn set_y(&mut self, y: f32) -> &mut Self {
         self.data.y = y;
         self
     }
     pub fn get_w(&self) -> f32 { self.data.w }
-    pub fn set_w(&mut self, w: f32) -> &Self {
+    pub fn set_w(&mut self, w: f32) -> &mut Self {
         self.data.w = w;
         self
     }
     pub fn get_h(&self) -> f32 { self.data.h }
-    pub fn set_h(&mut self, h: f32) -> &Self {
+    pub fn set_h(&mut self, h: f32) -> &mut Self {
         self.data.h = h;
         self
     }

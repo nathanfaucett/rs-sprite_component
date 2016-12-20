@@ -2,11 +2,13 @@
 
 
 extern crate scene_graph;
+extern crate material;
 
 extern crate sprite_component;
 
 
 use scene_graph::{Scene, Entity};
+use material::Material;
 
 use sprite_component::Sprite;
 
@@ -15,7 +17,7 @@ use sprite_component::Sprite;
 fn test_scene() {
     let mut scene = Scene::new();
     let mut entity = Entity::new();
-    let sprite = Sprite::new();
+    let sprite = Sprite::new(Material::new());
 
     entity.add_component(sprite);
     scene.add_entity(&mut entity);
