@@ -11,6 +11,7 @@ use sprite::Sprite;
 
 struct SpriteManagerData {
     scene: Option<Scene>,
+    count: usize,
     layers: Vector<Vector<Sprite>>,
 }
 
@@ -29,6 +30,7 @@ impl SpriteManager {
         SpriteManager {
             data: Shared::new(SpriteManagerData {
                 scene: None,
+                count: 0usize,
                 layers: layers,
             })
         }
@@ -47,6 +49,31 @@ impl SpriteManager {
         for layer in layers.iter_mut() {
             layer.sort_by(|a, b| a.get_z().cmp(&b.get_z()));
         }
+    }
+
+    pub fn get_components(&self) -> Vector<&Sprite> {
+        let mut out = Vector::with_capacity(self.data.count);
+        let ref layers = self.data.layers;
+
+        for layer in layers.iter() {
+            for sprite in layer.iter() {
+                out.push(sprite);
+            }
+        }
+
+        out
+    }
+    pub fn get_components_mut(&mut self) -> Vector<&mut Sprite> {
+        let mut out = Vector::with_capacity(self.data.count);
+        let ref mut layers = self.data.layers;
+
+        for layer in layers.iter_mut() {
+            for sprite in layer.iter_mut() {
+                out.push(sprite);
+            }
+        }
+
+        out
     }
 }
 
@@ -97,18 +124,25 @@ impl ComponentManager for SpriteManager {
             layers[layer].push(component.clone());
         }
 
+        self.data.count += 1;
         self.sort_layers();
     }
     fn remove_component(&mut self, component: &mut Box<Component>) {
         let component = component.downcast_mut::<Sprite>().unwrap();
-        let ref mut layer = self.data.layers[component.get_layer()];
+        let mut count = self.data.count;
+        {
+            let ref mut layer = self.data.layers[component.get_layer()];
 
-        match layer.iter().position(|c| *c == *component) {
-            Some(i) => {
-                component.set_sprite_manager(None);
-                layer.remove(&i);
-            },
-            None => (),
+            match layer.iter().position(|c| *c == *component) {
+                Some(i) => {
+                    count -= 1;
+                    component.set_sprite_manager(None);
+                    layer.remove(&i);
+                },
+                None => (),
+            }
         }
+
+        self.data.count = count;
     }
 }
