@@ -11,18 +11,13 @@ repository = "https://github.com/nathanfaucett/rs-sprite_component.git"
 homepage = "https://github.com/nathanfaucett/rs-sprite_component"
 
 
-[dependencies.vector]
-git = "https://github.com/nathanfaucett/rs-vector.git"
-[dependencies.stack]
-git = "https://github.com/nathanfaucett/rs-stack.git"
-[dependencies.remove]
-git = "https://github.com/nathanfaucett/rs-remove.git"
+[dependencies]
+vector = {git = "https://github.com/nathanfaucett/rs-vector.git"}
+stack = {git = "https://github.com/nathanfaucett/rs-stack.git"}
+remove = {git = "https://github.com/nathanfaucett/rs-remove.git"}
 
-[dependencies.scene_graph]
-git = "https://github.com/nathanfaucett/rs-scene_graph.git"
+scene_graph = {git = "https://github.com/nathanfaucett/rs-scene_graph.git"}
 
-[dependencies.material]
-git = "https://github.com/nathanfaucett/rs-material.git"
+material = {git = "https://github.com/nathanfaucett/rs-material.git"}
 
-[dependencies.shared]
-git = "https://github.com/nathanfaucett/rs-shared.git"
+shared = {git = "https://github.com/nathanfaucett/rs-shared.git"}
